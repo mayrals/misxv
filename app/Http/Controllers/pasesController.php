@@ -22,6 +22,7 @@ class pasesController extends Controller
 
     public function updatedActivity(Request $request)
     {
+
         $requestn = $request->phone_number;
         $id_pase = Pase::where('telefono', $requestn)->first();
         $totalpases = Pase::where('telefono', $requestn)->value("total_pases");
@@ -39,7 +40,7 @@ class pasesController extends Controller
         $qr = \QrCode::size(250)->color(182, 149, 192)->backgroundColor(255,255,255)->errorCorrection('H')->margin(5)->format('png')->generate('Total de pases confirmados: '. $pases_usados . ' Familia: ' . $familia, '../public/qrcodes/'.$id_pase->idpases.'.png');
       
 
-        $bienvenida = '¡Bienvenidos a la gran celebración de los XV años de nuestra querida hija Ximena!. Esperamos que disfruten de esa noche mágica y llena de emociones, rodeados de amigos y familiares. Que la alegría, el amor y la felicidad nos acompañen en todo momento y que cada uno de ustedes se sienta como en casa. Agradecemos su presencia y su apoyo en este día tan especial para nosotros.';
+        $bienvenida = '¡Bienvenidos a la gran celebración de los XV años de nuestra querida hija Ximena!. Esperamos que disfruten de esa noche mágica y llena de emociones, rodeados de amigos y familiares. Agradecemos su presencia y su apoyo en este día tan especial para nosotros.';
         
         $enviarbienvenida =  \Telegram::sendMessage([
             'chat_id' => $chat_id,
@@ -47,6 +48,18 @@ class pasesController extends Controller
             'text' => $bienvenida
         ]);  
         
+// Ruta local de la imagen a enviar
+$localVideoPath =  '../public/qrcodes/mixvximena.mp4';
+
+// Crea un objeto InputFile a partir de la ruta local de la imagen
+$video = InputFile::create($localVideoPath, 'video.mp4');
+        
+      $video=  \Telegram::sendVideo([
+            'chat_id' => $chat_id, 
+            'video' => $video,
+          ]);
+
+
         
  
         $ubicacionmisa = 'Te esperamos en la misa de acción de gracias que se celebrara a las 4:00 pm , abajo encontraras la ubicacion';
